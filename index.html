@@ -28,8 +28,11 @@
     :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
     .phone-wrap { min-height: 100vh; display: flex; justify-content: center; background: var(--bg); }
-    .phone { width: 100%; max-width: 480px; background: var(--surface); min-height: 100vh; display: flex; flex-direction: column; min-width: 0; }
+    .phone { width: 100%; max-width: 640px; background: var(--surface); min-height: 100vh; display: flex; flex-direction: column; min-width: 0; }
     .phone * { min-width: 0; }
+    @media (max-width: 640px) {
+      .phone { max-width: none; }
+    }
   </style>
 </head>
 <body>
