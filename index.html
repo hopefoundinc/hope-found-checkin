@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hope Found - Check In</title>
+  <style>
+    :root {
+      --teal: #0A5A5F; --teal-dark: #06413F; --teal-tint: #EDF3F3;
+      --ink: #1B2121; --ink-2: #485252; --ink-3: #6E7878;
+      --line: #D5DAD9; --line-strong: #AEB6B5;
+      --bg: #F5F6F5; --surface: #FFFFFF;
+      --flag: #8F3B18; --flag-tint: #FAEEE9;
+      --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+      --t-xs: 12px; --t-sm: 13px; --t-md: 15px; --t-base: 16px; --t-lg: 19px; --t-xl: 24px; --t-2xl: 30px;
+      --r: 2px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
+    body {
+      background: var(--bg); color: var(--ink);
+      font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      font-size: var(--t-base); line-height: 1.45;
+    }
+    button, input, textarea, select { font: inherit; color: inherit; border-radius: var(--r); }
+    a { color: var(--teal); }
+    a:hover { color: var(--teal-dark); }
+    :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+    .phone-wrap { min-height: 100vh; display: flex; justify-content: center; background: var(--bg); }
+    .phone { width: 100%; max-width: 480px; background: var(--surface); min-height: 100vh; display: flex; flex-direction: column; min-width: 0; }
+    .phone * { min-width: 0; }
+  </style>
+</head>
+<body>
+  <div class="phone-wrap">
+    <div class="phone">
+      <header style="padding:var(--s-5) var(--s-4) var(--s-3);border-bottom:1px solid var(--line)">
+        <div style="font-family:Georgia,serif;font-size:var(--t-md);color:var(--teal)">Hope Found Attendance</div>
+      </header>
+      <div id="app" style="flex:1;display:flex;flex-direction:column"></div>
+      <footer style="margin-top:auto;border-top:1px solid var(--line);padding:var(--s-3) var(--s-4);font-size:var(--t-xs);color:var(--ink-3);display:flex;justify-content:space-between">
+        <span>Hope Found, Inc.</span>
+        <span id="footerRole"></span>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Points at the checkin Apps Script project's own deployment URL.
+    // If that project is ever redeployed to a NEW deployment (not just
+    // "New version" on the existing one - see README "Updating a
+    // deployment"), this constant needs to be updated to match.
+    var BACKEND_URL = 'https://script.google.com/macros/s/AKfycby0uH7T6YcutmnlbE5N2tzRuSNV1FZkyZWVuEexw5w3IFPZhyGAfv1uX36d7HKQdZ-3dA/exec';
+
+    var TOKEN = new URLSearchParams(window.location.search).get('t');
+    var ctx = { noteOpen: false, note: '', pendingStatus: null, pendingGeo: null };
+
+    /**
+     * Content-Type: text/plain keeps this a CORS "simple request" (no
+     * preflight, which Apps Script's web app endpoint can't answer) -
+     * see the matching comment on doPost in checkin/Code.js.
+     */
+    function callBackend(action, args) {
+      return fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: action, args: args })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.error) throw new Error(data.error);
+          return data;
+        });
+    }
+
+    function render(html) {
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function setFooterRole() {
+      document.getElementById('footerRole').textContent = ctx.empRole || '';
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    function chipStyle(bg, fg, bd) {
+      return 'display:inline-block;background:' + bg + ';color:' + fg + ';border:1px solid ' + bd +
+        ';padding:3px 9px;font-size:12px;font-weight:600;border-radius:2px;white-space:nowrap';
+    }
+
+    // ---- one-time home-screen tip, remembered per device -------------------
+
+    function seenHomeTip() {
+      try { return localStorage.getItem('hf_seen_home_tip') === '1'; } catch (e) { return true; }
+    }
+    function markHomeTipSeen() {
+      try { localStorage.setItem('hf_seen_home_tip', '1'); } catch (e) { /* ignore */ }
+    }
+
+    // ---- views ---------------------------------------------------------
+
+    function renderLoading() {
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+          '<div role="status" style="font-size:var(--t-sm);color:var(--ink-3)">Loading your check-in page</div>' +
+          '<div style="height:26px;background:var(--bg);width:72%"></div>' +
+          '<div style="height:16px;background:var(--bg);width:54%"></div>' +
+          '<div style="height:72px;background:var(--bg)"></div>' +
+          '<div style="height:52px;background:var(--bg)"></div>' +
+        '</div>'
+      );
+    }
+
+    function showInvalidView(message) {
+      render(
+        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;text-align:center;justify-content:center">' +
+          '<div style="width:64px;height:64px;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center">' +
+            '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#485252" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6M12 16.5v.5"></path></svg>' +
+          '</div>' +
+          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.35">This link isn&#39;t working</h1>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:290px">' + escapeHtml(message) + '</p>' +
+        '</div>'
+      );
+    }
+
+    function renderFirst() {
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">Add this page to your home screen</h1>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2)">Then checking in each morning takes one tap. This link is personal to you, do not share it.</p>' +
+          '<div style="border:1px solid var(--line)">' +
+            '<div style="padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);font-size:var(--t-sm);text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-3)">iPhone, Safari</div>' +
+            '<ol style="margin:0;padding:var(--s-3) var(--s-4) var(--s-3) 34px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.7">' +
+              '<li>Tap the Share button at the bottom.</li>' +
+              '<li>Scroll and tap Add to Home Screen.</li>' +
+              '<li>Tap Add in the top right.</li>' +
+            '</ol>' +
+          '</div>' +
+          '<div style="border:1px solid var(--line)">' +
+            '<div style="padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);font-size:var(--t-sm);text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-3)">Android, Chrome</div>' +
+            '<ol style="margin:0;padding:var(--s-3) var(--s-4) var(--s-3) 34px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.7">' +
+              '<li>Tap the three dot menu at the top right.</li>' +
+              '<li>Tap Add to Home screen.</li>' +
+              '<li>Tap Install or Add.</li>' +
+            '</ol>' +
+          '</div>' +
+          '<button id="btn-continue" type="button" style="width:100%;min-height:56px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-md);font-weight:600;cursor:pointer">Continue to check-in</button>' +
+        '</div>'
+      );
+      document.getElementById('btn-continue').addEventListener('click', function () {
+        markHomeTipSeen();
+        renderMain();
+      });
+    }
+
+    function paintMain() {
+      var chevronPath = ctx.noteOpen ? 'M3 10l5-5 5 5' : 'M3 6l5 5 5-5';
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-5);flex:1">' +
+          '<div>' +
+            '<h1 style="font-family:Georgia,serif;font-size:var(--t-2xl);font-weight:400;margin:0">Good morning, ' + escapeHtml(ctx.firstName) + '</h1>' +
+            '<div style="margin-top:6px;font-size:var(--t-md);color:var(--ink-2)">' + escapeHtml(ctx.todayLong) + '</div>' +
+            (ctx.nowLabel ? '<div style="margin-top:2px;font-size:var(--t-md);color:var(--ink-2);font-variant-numeric:tabular-nums">Now ' + escapeHtml(ctx.nowLabel) + '</div>' : '') +
+          '</div>' +
+          '<button id="btn-checkin" type="button" style="width:100%;min-height:72px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-xl);font-weight:600;cursor:pointer;letter-spacing:0.01em">I am in</button>' +
+          '<button id="btn-field" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--teal);color:var(--teal-dark);font-size:var(--t-md);font-weight:600;cursor:pointer">In the field</button>' +
+          '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
+            '<button id="btn-note-toggle" type="button" aria-expanded="' + ctx.noteOpen + '" style="background:none;border:none;padding:0;min-height:44px;display:flex;align-items:center;gap:var(--s-2);color:var(--teal);cursor:pointer;font-size:var(--t-md)">' +
+              '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="' + chevronPath + '"></path></svg>' +
+              'Add a note (optional)' +
+            '</button>' +
+            (ctx.noteOpen
+              ? '<textarea id="noteInput" aria-label="Note for your manager" placeholder="e.g. running about 10 minutes late" rows="3" style="width:100%;margin-top:var(--s-2);border:1px solid var(--line-strong);padding:10px;resize:vertical">' + escapeHtml(ctx.note) + '</textarea>'
+              : '') +
+          '</div>' +
+          '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.5">Your location is recorded once, only when you tap.</p>' +
+        '</div>'
+      );
+      document.getElementById('btn-checkin').addEventListener('click', function () { startCheckIn('Present'); });
+      document.getElementById('btn-field').addEventListener('click', function () { startCheckIn('Field'); });
+      document.getElementById('btn-note-toggle').addEventListener('click', function () {
+        var el = document.getElementById('noteInput');
+        if (el) ctx.note = el.value;
+        ctx.noteOpen = !ctx.noteOpen;
+        paintMain();
+        if (ctx.noteOpen) document.getElementById('noteInput').focus();
+      });
+      if (ctx.noteOpen) {
+        document.getElementById('noteInput').addEventListener('input', function (e) { ctx.note = e.target.value; });
+      }
+    }
+
+    function renderMain() {
+      ctx.noteOpen = false;
+      paintMain();
+    }
+
+    function renderLocating() {
+      render(
+        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;justify-content:center;text-align:center">' +
+          '<div style="width:56px;height:56px;border:2px solid var(--teal);display:flex;align-items:center;justify-content:center">' +
+            '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A5A5F" stroke-width="1.8" aria-hidden="true"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>' +
+          '</div>' +
+          '<div role="status" style="font-family:Georgia,serif;font-size:var(--t-xl)">Checking location</div>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:260px">This takes a few seconds. Keep the page open.</p>' +
+        '</div>'
+      );
+    }
+
+    function renderSaving() {
+      render(
+        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;justify-content:center;text-align:center">' +
+          '<div role="status" style="font-family:Georgia,serif;font-size:var(--t-xl)">Recording your check-in</div>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:250px">Do not close the page.</p>' +
+        '</div>'
+      );
+    }
+
+    function locationLabel_() {
+      if (ctx.locationResult === 'inside') return 'Within radius';
+      if (ctx.locationResult === 'skipped_field') return 'Not classified, field visit';
+      return 'Outside expected radius';
+    }
+
+    function statusLabel_() {
+      return ctx.status === 'Field' ? 'Field' : 'Present';
+    }
+
+    function renderConfirmed() {
+      var receipt = [
+        { label: 'Status', value: statusLabel_() },
+        { label: 'Recorded', value: ctx.arrivalTimeDisplay },
+        { label: 'Source', value: 'Self check-in' },
+        { label: 'Location', value: locationLabel_() }
+      ];
+      render(
+        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;text-align:center">' +
+          '<div style="width:76px;height:76px;background:var(--teal-tint);border:1px solid var(--teal);display:flex;align-items:center;justify-content:center">' +
+            '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#06413F" stroke-width="2.2" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg>' +
+          '</div>' +
+          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.3">You are checked in at ' + escapeHtml(ctx.arrivalTimeDisplay) + '</h1>' +
+          '<div style="display:flex;gap:var(--s-2);align-items:center">' +
+            '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
+            '<span style="' + chipStyle('#FAEEE9', '#8F3B18', '#8F3B18') + '">Unverified</span>' +
+          '</div>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:280px">Your manager will confirm this entry.</p>' +
+          '<div style="width:100%;border:1px solid var(--line);text-align:left">' +
+            receipt.map(function (r) {
+              return '<div style="display:flex;justify-content:space-between;gap:var(--s-3);padding:10px 12px;border-bottom:1px solid var(--line);font-size:var(--t-sm)">' +
+                '<span style="color:var(--ink-3);flex-shrink:0">' + escapeHtml(r.label) + '</span>' +
+                '<span style="text-align:right;word-break:break-word">' + escapeHtml(r.value) + '</span>' +
+                '</div>';
+            }).join('') +
+          '</div>' +
+          '<button id="btn-back" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;font-size:var(--t-md)">Back to check-in page</button>' +
+        '</div>'
+      );
+      document.getElementById('btn-back').addEventListener('click', renderAlready);
+    }
+
+    function renderDenied() {
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+          '<div style="width:64px;height:64px;background:var(--flag-tint);border:1px solid var(--flag);display:flex;align-items:center;justify-content:center">' +
+            '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8F3B18" stroke-width="1.9" aria-hidden="true"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path><path d="M9 7l6 6M15 7l-6 6"></path></svg>' +
+          '</div>' +
+          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.3">Checked in at ' + escapeHtml(ctx.arrivalTimeDisplay) + ' without location</h1>' +
+          '<div style="display:flex;gap:var(--s-2);flex-wrap:wrap">' +
+            '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
+            '<span style="' + chipStyle('#FFFFFF', '#485252', '#AEB6B5') + '">No location</span>' +
+          '</div>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2)">Your entry was recorded and sent to the office manager for review. Nothing else is needed from you right now.</p>' +
+          '<div style="border:1px solid var(--line);padding:var(--s-4)">' +
+            '<div style="font-family:Georgia,serif;font-size:var(--t-lg);margin-bottom:var(--s-2)">To allow location next time</div>' +
+            '<ol style="margin:0;padding-left:20px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.7">' +
+              '<li>iPhone: Settings, then Safari, then Location, then Ask.</li>' +
+              '<li>Android: Chrome, tap the lock icon in the address bar, then Permissions, then Location.</li>' +
+              '<li>Reopen this page and tap the button again.</li>' +
+            '</ol>' +
+          '</div>' +
+          '<button id="btn-back" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;font-size:var(--t-md)">Back to check-in page</button>' +
+        '</div>'
+      );
+      document.getElementById('btn-back').addEventListener('click', renderAlready);
+    }
+
+    function renderAlready() {
+      var verifiedChipHtml = ctx.verified
+        ? '<span style="' + chipStyle('#FFFFFF', '#485252', '#AEB6B5') + '">Verified by manager</span>'
+        : '<span style="' + chipStyle('#FAEEE9', '#8F3B18', '#8F3B18') + '">Unverified</span>';
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">You are already checked in today</h1>' +
+          '<div style="border:1px solid var(--teal);background:var(--teal-tint);padding:var(--s-4)">' +
+            '<div style="font-size:var(--t-sm);color:var(--ink-2);text-transform:uppercase;letter-spacing:0.06em">Recorded arrival</div>' +
+            (ctx.arrivalTimeDisplay
+              ? '<div style="font-family:Georgia,serif;font-size:var(--t-2xl);margin-top:2px;font-variant-numeric:tabular-nums">' + escapeHtml(ctx.arrivalTimeDisplay) + '</div>'
+              : '') +
+            '<div style="margin-top:var(--s-2);display:flex;gap:var(--s-2)">' +
+              '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
+              verifiedChipHtml +
+            '</div>' +
+          '</div>' +
+          '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2)">Already done for today. If this looks wrong, contact your manager.</p>' +
+        '</div>'
+      );
+    }
+
+    function renderFailed() {
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+          '<div role="alert" style="border:1px solid var(--flag);background:var(--flag-tint);padding:var(--s-4);color:var(--flag)">' +
+            '<div style="font-family:Georgia,serif;font-size:var(--t-lg)">Check-in did not save</div>' +
+            '<p style="margin:var(--s-2) 0 0;font-size:var(--t-sm);line-height:1.6">' + escapeHtml(ctx.errorMessage || 'Nothing was recorded.') + ' Tap Retry, or contact your manager if this keeps happening.</p>' +
+          '</div>' +
+          '<button id="btn-retry" type="button" style="width:100%;min-height:56px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-md);font-weight:600;cursor:pointer">Retry</button>' +
+          '<button id="btn-back" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;font-size:var(--t-md)">Back to check-in page</button>' +
+        '</div>'
+      );
+      document.getElementById('btn-retry').addEventListener('click', retryCheckIn);
+      document.getElementById('btn-back').addEventListener('click', renderMain);
+    }
+
+    // ---- geolocation + submit flow --------------------------------------
+
+    /** Same geolocation capture shape/behavior as checkin/GeoTest.html. */
+    function captureGeo() {
+      return new Promise(function (resolve) {
+        if (!('geolocation' in navigator)) {
+          resolve({ permissionState: 'unavailable' });
+          return;
+        }
+        var settled = false;
+        var timer = setTimeout(function () {
+          if (settled) return;
+          settled = true;
+          resolve({ permissionState: 'unavailable' });
+        }, 10000);
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            resolve({
+              permissionState: 'granted',
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              accuracyM: pos.coords.accuracy
+            });
+          },
+          function (err) {
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            resolve({ permissionState: err.code === 1 ? 'denied' : 'unavailable' });
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+      });
+    }
+
+    function startCheckIn(status) {
+      ctx.pendingStatus = status;
+      var noteEl = document.getElementById('noteInput');
+      if (noteEl) ctx.note = noteEl.value;
+      renderLocating();
+      captureGeo().then(function (geo) {
+        ctx.pendingGeo = geo;
+        renderSaving();
+        callBackend('selfCheckIn', [TOKEN, status, geo, navigator.userAgent, ctx.note])
+          .then(handleCheckInSuccess)
+          .catch(handleCheckInFailure);
+      });
+    }
+
+    function retryCheckIn() {
+      startCheckIn(ctx.pendingStatus);
+    }
+
+    function handleCheckInSuccess(data) {
+      ctx.status = data.status;
+      ctx.arrivalTimeDisplay = data.arrivalTimeDisplay;
+      ctx.verified = data.verified;
+      ctx.locationResult = data.locationResult;
+      ctx.empRole = data.empRole || ctx.empRole;
+      setFooterRole();
+      var noLocation = ctx.locationResult === 'denied' || ctx.locationResult === 'unavailable';
+      if (noLocation) renderDenied(); else renderConfirmed();
+    }
+
+    function handleCheckInFailure(err) {
+      ctx.errorMessage = err && err.message ? err.message : 'Something went wrong.';
+      renderFailed();
+    }
+
+    // ---- boot -----------------------------------------------------------
+
+    function handleBootData(data) {
+      if (data.state === 'invalid') {
+        showInvalidView('This check-in link isn\'t valid. Contact your manager for a new one.');
+        return;
+      }
+      if (data.state === 'inactive') {
+        showInvalidView('This check-in link has been deactivated. Contact your manager if you think this is a mistake.');
+        return;
+      }
+
+      ctx.firstName = data.firstName;
+      ctx.empRole = data.empRole || '';
+      ctx.todayLong = data.todayLong;
+      setFooterRole();
+
+      if (data.state === 'done') {
+        ctx.status = data.status;
+        ctx.arrivalTimeDisplay = data.arrivalTimeDisplay;
+        ctx.verified = data.verified;
+        ctx.locationResult = data.locationResult;
+        renderAlready();
+        return;
+      }
+
+      ctx.nowLabel = data.nowLabel;
+      if (seenHomeTip()) renderMain(); else renderFirst();
+    }
+
+    function boot() {
+      if (!TOKEN) {
+        showInvalidView('This check-in link isn\'t valid. Contact your manager for a new one.');
+        return;
+      }
+      renderLoading();
+      callBackend('getCheckInPageData', [TOKEN])
+        .then(handleBootData)
+        .catch(function () { showInvalidView('This check-in link isn\'t valid. Contact your manager for a new one.'); });
+    }
+
+    boot();
+  </script>
+</body>
+</html>
