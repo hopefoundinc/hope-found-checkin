@@ -39,8 +39,9 @@
 <body>
   <div class="phone-wrap">
     <div class="phone">
-      <header style="padding:var(--s-5) var(--s-4) var(--s-3);border-bottom:1px solid var(--line)">
+      <header style="padding:var(--s-5) var(--s-4) var(--s-3);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:var(--s-3)">
         <div style="font-family:Georgia,serif;font-size:var(--t-md);color:var(--teal)">Hope Found Attendance</div>
+        <button id="headerTimeOffBtn" type="button" style="display:none;background:none;border:1px solid var(--teal);color:var(--teal);padding:6px 10px;font-size:var(--t-xs);font-weight:600;cursor:pointer;white-space:nowrap">Time off</button>
       </header>
       <div id="app" style="flex:1;display:flex;flex-direction:column"></div>
       <footer style="margin-top:auto;border-top:1px solid var(--line);padding:var(--s-3) var(--s-4);font-size:var(--t-xs);color:var(--ink-3);display:flex;justify-content:space-between">
@@ -182,9 +183,6 @@
               ? '<textarea id="noteInput" aria-label="Note for your manager" placeholder="e.g. running about 10 minutes late" rows="3" style="width:100%;margin-top:var(--s-2);border:1px solid var(--line-strong);padding:10px;resize:vertical">' + escapeHtml(ctx.note) + '</textarea>'
               : '') +
           '</div>' +
-          '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
-            '<button id="btn-timeoff" type="button" style="background:none;border:none;padding:0;min-height:44px;display:flex;align-items:center;color:var(--teal);cursor:pointer;font-size:var(--t-md)">Request time off</button>' +
-          '</div>' +
           '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.5">Your location is recorded once, only when you tap.</p>' +
         '</div>'
       );
@@ -200,10 +198,6 @@
       if (ctx.noteOpen) {
         document.getElementById('noteInput').addEventListener('input', function (e) { ctx.note = e.target.value; });
       }
-      document.getElementById('btn-timeoff').addEventListener('click', function () {
-        ctx.cameFromAlready = false;
-        openTimeOff();
-      });
     }
 
     function renderMain() {
@@ -311,16 +305,9 @@
               '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
             '</div>' +
           '</div>' +
-          '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
-            '<button id="btn-timeoff" type="button" style="background:none;border:none;padding:0;min-height:44px;display:flex;align-items:center;color:var(--teal);cursor:pointer;font-size:var(--t-md)">Request time off</button>' +
-          '</div>' +
           '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2)">Already done for today. If this looks wrong, contact your manager.</p>' +
         '</div>'
       );
-      document.getElementById('btn-timeoff').addEventListener('click', function () {
-        ctx.cameFromAlready = true;
-        openTimeOff();
-      });
     }
 
     function renderFailed() {
@@ -365,9 +352,12 @@
       }).join('');
     }
 
+    // Re-checks the real check-in state rather than trying to remember which
+    // screen opened Time Off - the header button reaches it from every
+    // screen, so there's no single "previous view" to restore.
     function timeOffBack_() {
       ctx.timeOffError = null;
-      if (ctx.cameFromAlready) renderAlready(); else renderMain();
+      boot();
     }
 
     function renderTimeOff() {
@@ -507,14 +497,17 @@
 
     function handleBootData(data) {
       if (data.state === 'invalid') {
+        document.getElementById('headerTimeOffBtn').style.display = 'none';
         showInvalidView('This check-in link isn\'t valid. Contact your manager for a new one.');
         return;
       }
       if (data.state === 'inactive') {
+        document.getElementById('headerTimeOffBtn').style.display = 'none';
         showInvalidView('This check-in link has been deactivated. Contact your manager if you think this is a mistake.');
         return;
       }
 
+      document.getElementById('headerTimeOffBtn').style.display = '';
       ctx.firstName = data.firstName;
       ctx.empRole = data.empRole || '';
       ctx.todayLong = data.todayLong;
@@ -542,6 +535,11 @@
         .then(handleBootData)
         .catch(function () { showInvalidView('This check-in link isn\'t valid. Contact your manager for a new one.'); });
     }
+
+    // Lives in the static header, not inside #app, so it's reachable from
+    // every screen (checked in or not) without each render function having
+    // to re-add its own copy.
+    document.getElementById('headerTimeOffBtn').addEventListener('click', openTimeOff);
 
     boot();
   </script>
