@@ -182,6 +182,9 @@
               ? '<textarea id="noteInput" aria-label="Note for your manager" placeholder="e.g. running about 10 minutes late" rows="3" style="width:100%;margin-top:var(--s-2);border:1px solid var(--line-strong);padding:10px;resize:vertical">' + escapeHtml(ctx.note) + '</textarea>'
               : '') +
           '</div>' +
+          '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
+            '<button id="btn-timeoff" type="button" style="background:none;border:none;padding:0;min-height:44px;display:flex;align-items:center;color:var(--teal);cursor:pointer;font-size:var(--t-md)">Request time off</button>' +
+          '</div>' +
           '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.5">Your location is recorded once, only when you tap.</p>' +
         '</div>'
       );
@@ -197,6 +200,10 @@
       if (ctx.noteOpen) {
         document.getElementById('noteInput').addEventListener('input', function (e) { ctx.note = e.target.value; });
       }
+      document.getElementById('btn-timeoff').addEventListener('click', function () {
+        ctx.cameFromAlready = false;
+        openTimeOff();
+      });
     }
 
     function renderMain() {
@@ -250,9 +257,7 @@
           '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.3">You are checked in at ' + escapeHtml(ctx.arrivalTimeDisplay) + '</h1>' +
           '<div style="display:flex;gap:var(--s-2);align-items:center">' +
             '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
-            '<span style="' + chipStyle('#FAEEE9', '#8F3B18', '#8F3B18') + '">Unverified</span>' +
           '</div>' +
-          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:280px">Your manager will confirm this entry.</p>' +
           '<div style="width:100%;border:1px solid var(--line);text-align:left">' +
             receipt.map(function (r) {
               return '<div style="display:flex;justify-content:space-between;gap:var(--s-3);padding:10px 12px;border-bottom:1px solid var(--line);font-size:var(--t-sm)">' +
@@ -294,9 +299,6 @@
     }
 
     function renderAlready() {
-      var verifiedChipHtml = ctx.verified
-        ? '<span style="' + chipStyle('#FFFFFF', '#485252', '#AEB6B5') + '">Verified by manager</span>'
-        : '<span style="' + chipStyle('#FAEEE9', '#8F3B18', '#8F3B18') + '">Unverified</span>';
       render(
         '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
           '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">You are already checked in today</h1>' +
@@ -307,12 +309,18 @@
               : '') +
             '<div style="margin-top:var(--s-2);display:flex;gap:var(--s-2)">' +
               '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
-              verifiedChipHtml +
             '</div>' +
+          '</div>' +
+          '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
+            '<button id="btn-timeoff" type="button" style="background:none;border:none;padding:0;min-height:44px;display:flex;align-items:center;color:var(--teal);cursor:pointer;font-size:var(--t-md)">Request time off</button>' +
           '</div>' +
           '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2)">Already done for today. If this looks wrong, contact your manager.</p>' +
         '</div>'
       );
+      document.getElementById('btn-timeoff').addEventListener('click', function () {
+        ctx.cameFromAlready = true;
+        openTimeOff();
+      });
     }
 
     function renderFailed() {
@@ -328,6 +336,100 @@
       );
       document.getElementById('btn-retry').addEventListener('click', retryCheckIn);
       document.getElementById('btn-back').addEventListener('click', renderMain);
+    }
+
+    // ---- time off request -------------------------------------------------
+
+    function timeOffStatusChip_(status) {
+      if (status === 'Approved') return '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">Approved</span>';
+      if (status === 'Denied') return '<span style="' + chipStyle('#FAEEE9', '#8F3B18', '#8F3B18') + '">Denied</span>';
+      return '<span style="' + chipStyle('#FFFFFF', '#485252', '#AEB6B5') + '">Pending</span>';
+    }
+
+    function timeOffDateRangeLabel_(r) {
+      return r.start_date === r.end_date ? r.start_date : (r.start_date + ' to ' + r.end_date);
+    }
+
+    function timeOffListHtml_(list) {
+      if (!list) return '<p style="margin:0;font-size:var(--t-sm);color:var(--ink-3)">Loading...</p>';
+      if (list.length === 0) return '<p style="margin:0;font-size:var(--t-sm);color:var(--ink-3)">No requests yet.</p>';
+      return list.map(function (r) {
+        return '<div style="border:1px solid var(--line);padding:var(--s-3);margin-bottom:var(--s-2)">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;gap:var(--s-2)">' +
+            '<strong style="font-size:var(--t-sm)">' + escapeHtml(timeOffDateRangeLabel_(r)) + '</strong>' +
+            timeOffStatusChip_(r.status) +
+          '</div>' +
+          '<div style="margin-top:4px;font-size:var(--t-sm);color:var(--ink-2)">' + escapeHtml(r.reason) + '</div>' +
+          (r.status !== 'Pending' && r.decision_note ? '<div style="margin-top:4px;font-size:var(--t-xs);color:var(--ink-3)">Manager note: ' + escapeHtml(r.decision_note) + '</div>' : '') +
+        '</div>';
+      }).join('');
+    }
+
+    function timeOffBack_() {
+      ctx.timeOffError = null;
+      if (ctx.cameFromAlready) renderAlready(); else renderMain();
+    }
+
+    function renderTimeOff() {
+      render(
+        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+          '<button id="btn-timeoff-back" type="button" style="align-self:flex-start;background:none;border:none;padding:0;color:var(--teal);cursor:pointer;font-size:var(--t-md);display:flex;align-items:center;gap:4px">' +
+            '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 3 5 8l5 5"></path></svg> Back' +
+          '</button>' +
+          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">Request time off</h1>' +
+          '<div style="display:flex;flex-direction:column;gap:var(--s-3)">' +
+            '<label style="font-size:var(--t-sm);color:var(--ink-2)">Start date' +
+              '<input id="to-start" type="date" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line-strong);padding:10px;font-size:var(--t-md)">' +
+            '</label>' +
+            '<label style="font-size:var(--t-sm);color:var(--ink-2)">End date (leave blank for a single day)' +
+              '<input id="to-end" type="date" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line-strong);padding:10px;font-size:var(--t-md)">' +
+            '</label>' +
+            '<label style="font-size:var(--t-sm);color:var(--ink-2)">Reason' +
+              '<textarea id="to-reason" rows="3" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line-strong);padding:10px;font-size:var(--t-md);resize:vertical"></textarea>' +
+            '</label>' +
+          '</div>' +
+          (ctx.timeOffError ? '<p role="alert" style="margin:0;color:var(--flag);font-size:var(--t-sm)">' + escapeHtml(ctx.timeOffError) + '</p>' : '') +
+          '<button id="btn-timeoff-submit" type="button" style="width:100%;min-height:52px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-md);font-weight:600;cursor:pointer">Submit request</button>' +
+          '<div style="border-top:1px solid var(--line);padding-top:var(--s-4)">' +
+            '<div style="font-family:Georgia,serif;font-size:var(--t-lg);margin-bottom:var(--s-2)">Your requests</div>' +
+            '<div id="timeoff-list">' + timeOffListHtml_(ctx.timeOffRequests) + '</div>' +
+          '</div>' +
+        '</div>'
+      );
+      document.getElementById('btn-timeoff-back').addEventListener('click', timeOffBack_);
+      document.getElementById('btn-timeoff-submit').addEventListener('click', submitTimeOffFlow);
+    }
+
+    function openTimeOff() {
+      ctx.timeOffError = null;
+      ctx.timeOffRequests = null;
+      renderTimeOff();
+      callBackend('getMyTimeOffRequests', [TOKEN])
+        .then(function (list) { ctx.timeOffRequests = list; renderTimeOff(); })
+        .catch(function () { ctx.timeOffRequests = []; renderTimeOff(); });
+    }
+
+    function submitTimeOffFlow() {
+      var start = document.getElementById('to-start').value;
+      var end = document.getElementById('to-end').value || start;
+      var reason = document.getElementById('to-reason').value.trim();
+      ctx.timeOffError = null;
+      if (!start) { ctx.timeOffError = 'Start date is required.'; renderTimeOff(); return; }
+      if (!reason) { ctx.timeOffError = 'A reason is required.'; renderTimeOff(); return; }
+      if (end < start) { ctx.timeOffError = 'End date cannot be before start date.'; renderTimeOff(); return; }
+
+      var btn = document.getElementById('btn-timeoff-submit');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      callBackend('submitTimeOffRequest', [TOKEN, { start_date: start, end_date: end, reason: reason }])
+        .then(function (list) {
+          ctx.timeOffRequests = list;
+          renderTimeOff();
+        })
+        .catch(function (err) {
+          ctx.timeOffError = err && err.message ? err.message : 'Something went wrong.';
+          renderTimeOff();
+        });
     }
 
     // ---- geolocation + submit flow --------------------------------------
@@ -389,7 +491,6 @@
     function handleCheckInSuccess(data) {
       ctx.status = data.status;
       ctx.arrivalTimeDisplay = data.arrivalTimeDisplay;
-      ctx.verified = data.verified;
       ctx.locationResult = data.locationResult;
       ctx.empRole = data.empRole || ctx.empRole;
       setFooterRole();
@@ -422,7 +523,6 @@
       if (data.state === 'done') {
         ctx.status = data.status;
         ctx.arrivalTimeDisplay = data.arrivalTimeDisplay;
-        ctx.verified = data.verified;
         ctx.locationResult = data.locationResult;
         renderAlready();
         return;
