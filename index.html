@@ -4,47 +4,108 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hope Found - Check In</title>
-  <link rel="icon" type="image/png" href="data:image/png;base64,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">
+    <link rel="icon" type="image/png" href="data:image/png;base64,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">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --teal: #0A5A5F; --teal-dark: #06413F; --teal-tint: #EDF3F3;
       --ink: #1B2121; --ink-2: #485252; --ink-3: #6E7878;
-      --line: #D5DAD9; --line-strong: #AEB6B5;
-      --bg: #F5F6F5; --surface: #FFFFFF;
-      --flag: #8F3B18; --flag-tint: #FAEEE9;
+      --cream: #F7F4EF; --surface: #FDFCFA; --row-bg: #F5F2ED;
+      --line: #E9E4DC; --line-strong: #D9D2C6;
+      --flag: #8F3B18; --flag-tint: #FAEEE9; --flag-border: #D9B3A3;
+      --wfh-tint: #EAF1F7; --wfh-ink: #2B5876; --wfh-border: #BBD3E3;
       --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
       --t-xs: 12px; --t-sm: 13px; --t-md: 15px; --t-base: 16px; --t-lg: 19px; --t-xl: 24px; --t-2xl: 30px;
-      --r: 2px;
+      --r-pill: 999px; --r-card: 18px; --r-sm: 10px;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
     body {
-      background: var(--bg); color: var(--ink);
+      background: var(--cream); color: var(--ink);
       font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
       font-size: var(--t-base); line-height: 1.45;
     }
-    button, input, textarea, select { font: inherit; color: inherit; border-radius: var(--r); }
+    button, input, textarea, select { font: inherit; color: inherit; }
+    h1, h2 { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; margin: 0; }
     a { color: var(--teal); }
     a:hover { color: var(--teal-dark); }
     :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
-    .phone-wrap { min-height: 100vh; display: flex; justify-content: center; background: var(--bg); }
+    .phone-wrap { min-height: 100vh; display: flex; justify-content: center; background: var(--cream); }
     .phone { width: 100%; max-width: 640px; background: var(--surface); min-height: 100vh; display: flex; flex-direction: column; min-width: 0; }
     .phone * { min-width: 0; }
     @media (max-width: 640px) {
       .phone { max-width: none; }
     }
+
+    header.top { padding: var(--s-5) var(--s-4) var(--s-3); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+    .brand { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: var(--t-lg); color: var(--teal-dark); }
+    .btn-pill-outline { background: var(--surface); border: 1px solid var(--teal); color: var(--teal); border-radius: var(--r-pill); padding: 8px 16px; font-size: var(--t-sm); font-weight: 600; cursor: pointer; white-space: nowrap; }
+    footer.bottom { margin-top: auto; border-top: 1px solid var(--line); padding: var(--s-3) var(--s-4); font-size: var(--t-xs); color: var(--ink-3); display: flex; justify-content: space-between; }
+
+    .screen { padding: var(--s-5) var(--s-4); display: flex; flex-direction: column; gap: var(--s-4); flex: 1; }
+    .eyebrow { font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+
+    .btn-primary { width: 100%; min-height: 60px; background: var(--teal); color: #fff; border: none; border-radius: var(--r-pill); font-size: var(--t-lg); font-weight: 700; cursor: pointer; }
+    .btn-primary:active { background: var(--teal-dark); }
+    .btn-secondary { width: 100%; min-height: 52px; background: var(--surface); border: 1.5px solid var(--teal); color: var(--teal-dark); border-radius: var(--r-pill); font-size: var(--t-md); font-weight: 700; cursor: pointer; }
+    .btn-plain { width: 100%; min-height: 48px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-pill); color: var(--ink); font-size: var(--t-md); font-weight: 600; cursor: pointer; }
+    .btn-plain:hover { border-color: var(--teal); }
+
+    .card { border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); }
+    .card-pad { padding: var(--s-4); }
+    .tint-card { background: var(--teal-tint); border: 1px solid #9CBCBC; border-radius: var(--r-card); padding: var(--s-4); }
+    .flag-card { background: var(--flag-tint); border: 1px solid var(--flag-border); border-radius: var(--r-card); padding: var(--s-4); }
+    .row-bg-card { background: var(--row-bg); border: 1px solid var(--line-strong); border-radius: var(--r-card); padding: var(--s-4); }
+
+    .now-card { background: var(--teal-tint); border-radius: var(--r-card); padding: var(--s-4); display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+    .now-value { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; font-size: 30px; color: var(--teal-dark); font-variant-numeric: tabular-nums; margin-top: 2px; }
+
+    .badge { display: inline-block; padding: 4px 12px; font-size: var(--t-xs); font-weight: 700; border-radius: var(--r-pill); border: 1px solid; white-space: nowrap; }
+    .chip-present { background: #fff; color: var(--teal-dark); border-color: #9CBCBC; }
+    .chip-field { background: #fff; color: var(--teal-dark); border-color: var(--teal); }
+    .chip-wfh { background: var(--wfh-tint); color: var(--wfh-ink); border-color: var(--wfh-border); }
+    .chip-flag { background: var(--flag-tint); color: var(--flag); border-color: var(--flag-border); }
+    .chip-muted { background: #fff; color: var(--ink-2); border-color: var(--line-strong); }
+
+    .note-toggle { background: none; border: none; padding: 0; min-height: 44px; display: flex; align-items: center; gap: var(--s-2); color: var(--teal); cursor: pointer; font-size: var(--t-md); font-weight: 600; }
+    .note-input { width: 100%; margin-top: var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--r-sm); padding: 10px; resize: vertical; background: var(--surface); }
+
+    .receipt { width: 100%; border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; text-align: left; }
+    .receipt-row { display: flex; justify-content: space-between; gap: var(--s-3); padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: var(--t-sm); }
+    .receipt-row:last-child { border-bottom: none; }
+    .receipt-row .rlabel { color: var(--ink-3); flex-shrink: 0; }
+    .receipt-row .rvalue { text-align: right; word-break: break-word; font-weight: 600; }
+
+    .icon-circle { border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    .field-label { font-size: var(--t-sm); color: var(--ink-2); font-weight: 600; display: block; margin-bottom: 4px; }
+    .field-input { display: block; width: 100%; border: 1px solid var(--line-strong); border-radius: var(--r-sm); padding: 10px 12px; font-size: var(--t-md); background: var(--surface); }
+    .field-hint { font-size: var(--t-xs); color: var(--ink-3); margin: 2px 0 4px; }
+
+    .pill-chip { border: 1px solid var(--teal); background: var(--surface); color: var(--teal-dark); border-radius: var(--r-pill); padding: 9px 16px; font-size: var(--t-sm); font-weight: 700; cursor: pointer; }
+    .pill-chip.selected { background: var(--teal); color: #fff; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+    .req-card { border: 1px solid var(--line); border-radius: var(--r-card); padding: var(--s-4); margin-bottom: var(--s-3); }
+    .req-card-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s-2); }
+    .req-actions { display: flex; gap: var(--s-2); margin-top: var(--s-3); }
+    .req-actions .btn-plain, .req-actions .btn-secondary { min-height: 40px; font-size: var(--t-sm); }
+    .link-btn { background: none; border: none; padding: 0; color: var(--teal); font-weight: 600; cursor: pointer; font-size: var(--t-sm); }
+    .back-link { align-self: flex-start; background: none; border: none; padding: 0; color: var(--teal); cursor: pointer; font-size: var(--t-md); font-weight: 600; display: flex; align-items: center; gap: 4px; }
   </style>
 </head>
 <body>
   <div class="phone-wrap">
     <div class="phone">
-      <header style="padding:var(--s-5) var(--s-4) var(--s-3);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:var(--s-3)">
-        <div style="font-family:Georgia,serif;font-size:var(--t-md);color:var(--teal)">Hope Found Attendance</div>
-        <button id="headerTimeOffBtn" type="button" style="display:none;background:none;border:1px solid var(--teal);color:var(--teal);padding:6px 10px;font-size:var(--t-xs);font-weight:600;cursor:pointer;white-space:nowrap">Time off</button>
+      <header class="top">
+        <div class="brand">Hope Found Attendance</div>
+        <button id="headerTimeOffBtn" type="button" class="btn-pill-outline" style="display:none">Time off</button>
       </header>
       <div id="app" style="flex:1;display:flex;flex-direction:column"></div>
-      <footer style="margin-top:auto;border-top:1px solid var(--line);padding:var(--s-3) var(--s-4);font-size:var(--t-xs);color:var(--ink-3);display:flex;justify-content:space-between">
+      <footer class="bottom">
         <span>Hope Found, Inc.</span>
         <span id="footerRole"></span>
       </footer>
@@ -52,25 +113,25 @@
   </div>
 
   <script>
-    // Points at the checkin Apps Script project's own deployment URL.
-    // If that project is ever redeployed to a NEW deployment (not just
-    // "New version" on the existing one - see README "Updating a
-    // deployment"), this constant needs to be updated to match.
+    // Points at the checkin Apps Script project's own deployment URL. If
+    // that project is ever redeployed to a NEW deployment (not just "New
+    // version" on the existing one - see README "Updating a deployment"),
+    // this constant needs to be updated to match.
     var BACKEND_URL = 'https://script.google.com/macros/s/AKfycby0uH7T6YcutmnlbE5N2tzRuSNV1FZkyZWVuEexw5w3IFPZhyGAfv1uX36d7HKQdZ-3dA/exec';
 
     var TOKEN = new URLSearchParams(window.location.search).get('t');
-    var ctx = { noteOpen: false, note: '', pendingStatus: null, pendingGeo: null };
 
     /**
      * Content-Type: text/plain keeps this a CORS "simple request" (no
-     * preflight, which Apps Script's web app endpoint can't answer) -
-     * see the matching comment on doPost in checkin/Code.js.
+     * preflight, which Apps Script's web app endpoint can't answer) - see
+     * the matching comment on doPost in checkin/Code.js.
      */
-    function callBackend(action, args) {
+    function call(fnName) {
+      var args = Array.prototype.slice.call(arguments, 1);
       return fetch(BACKEND_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: action, args: args })
+        body: JSON.stringify({ action: fnName, args: args })
       })
         .then(function (res) { return res.json(); })
         .then(function (data) {
@@ -78,6 +139,12 @@
           return data;
         });
     }
+
+    var TIMEOFF_TYPES = ['Off', 'Vacation', 'Appointment', 'WFH', 'Family'];
+    var ctx = {
+      noteOpen: false, note: '', pendingStatus: null, pendingGeo: null,
+      editingRequestId: null, timeOffFormValues: {}, timeOffType: 'Off'
+    };
 
     function render(html) {
       document.getElementById('app').innerHTML = html;
@@ -93,11 +160,6 @@
       });
     }
 
-    function chipStyle(bg, fg, bd) {
-      return 'display:inline-block;background:' + bg + ';color:' + fg + ';border:1px solid ' + bd +
-        ';padding:3px 9px;font-size:12px;font-weight:600;border-radius:2px;white-space:nowrap';
-    }
-
     // ---- one-time home-screen tip, remembered per device -------------------
 
     function seenHomeTip() {
@@ -107,27 +169,43 @@
       try { localStorage.setItem('hf_seen_home_tip', '1'); } catch (e) { /* ignore */ }
     }
 
+    // ---- status chip helpers ------------------------------------------------
+
+    function statusLabel_() {
+      if (ctx.status === 'Field') return 'Field';
+      if (ctx.status === 'WFH') return 'WFH';
+      return 'Present';
+    }
+    function statusChipClass_(status) {
+      if (status === 'Field') return 'chip-field';
+      if (status === 'WFH') return 'chip-wfh';
+      return 'chip-present';
+    }
+    function statusChipHtml_(status) {
+      return '<span class="badge ' + statusChipClass_(status) + '">' + escapeHtml(status) + '</span>';
+    }
+
     // ---- views ---------------------------------------------------------
 
     function renderLoading() {
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
+        '<div class="screen">' +
           '<div role="status" style="font-size:var(--t-sm);color:var(--ink-3)">Loading your check-in page</div>' +
-          '<div style="height:26px;background:var(--bg);width:72%"></div>' +
-          '<div style="height:16px;background:var(--bg);width:54%"></div>' +
-          '<div style="height:72px;background:var(--bg)"></div>' +
-          '<div style="height:52px;background:var(--bg)"></div>' +
+          '<div style="height:26px;background:var(--row-bg);border-radius:var(--r-sm);width:72%"></div>' +
+          '<div style="height:16px;background:var(--row-bg);border-radius:var(--r-sm);width:54%"></div>' +
+          '<div style="height:72px;background:var(--row-bg);border-radius:var(--r-card)"></div>' +
+          '<div style="height:52px;background:var(--row-bg);border-radius:var(--r-pill)"></div>' +
         '</div>'
       );
     }
 
     function showInvalidView(message) {
       render(
-        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;text-align:center;justify-content:center">' +
-          '<div style="width:64px;height:64px;border:1px solid var(--line-strong);display:flex;align-items:center;justify-content:center">' +
+        '<div class="screen" style="align-items:center;text-align:center;justify-content:center">' +
+          '<div class="icon-circle" style="width:64px;height:64px;border:1px solid var(--line-strong)">' +
             '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#485252" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v6M12 16.5v.5"></path></svg>' +
           '</div>' +
-          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.35">This link isn&#39;t working</h1>' +
+          '<h1 style="font-size:var(--t-xl);line-height:1.35">This link isn&#39;t working</h1>' +
           '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:290px">' + escapeHtml(message) + '</p>' +
         '</div>'
       );
@@ -135,26 +213,27 @@
 
     function renderFirst() {
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
-          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">Add this page to your home screen</h1>' +
-          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2)">Then checking in each morning takes one tap. This link is personal to you, do not share it.</p>' +
-          '<div style="border:1px solid var(--line)">' +
-            '<div style="padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);font-size:var(--t-sm);text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-3)">iPhone, Safari</div>' +
-            '<ol style="margin:0;padding:var(--s-3) var(--s-4) var(--s-3) 34px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.7">' +
+        '<div class="screen">' +
+          '<div class="eyebrow">One-time setup</div>' +
+          '<h1 style="font-size:var(--t-xl)">Add this page to your home screen</h1>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2)">Then checking in each morning takes one tap. This link is personal to you. Please don&#39;t share it.</p>' +
+          '<div class="card">' +
+            '<div style="padding:10px 14px;background:var(--row-bg);border-bottom:1px solid var(--line);border-radius:var(--r-card) var(--r-card) 0 0;font-size:var(--t-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3)">iPhone, Safari</div>' +
+            '<ol style="margin:0;padding:var(--s-3) var(--s-4) var(--s-3) 34px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.9">' +
               '<li>Tap the Share button at the bottom.</li>' +
               '<li>Scroll and tap Add to Home Screen.</li>' +
               '<li>Tap Add in the top right.</li>' +
             '</ol>' +
           '</div>' +
-          '<div style="border:1px solid var(--line)">' +
-            '<div style="padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--line);font-size:var(--t-sm);text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-3)">Android, Chrome</div>' +
-            '<ol style="margin:0;padding:var(--s-3) var(--s-4) var(--s-3) 34px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.7">' +
-              '<li>Tap the three dot menu at the top right.</li>' +
+          '<div class="card">' +
+            '<div style="padding:10px 14px;background:var(--row-bg);border-bottom:1px solid var(--line);border-radius:var(--r-card) var(--r-card) 0 0;font-size:var(--t-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-3)">Android, Chrome</div>' +
+            '<ol style="margin:0;padding:var(--s-3) var(--s-4) var(--s-3) 34px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.9">' +
+              '<li>Tap the three-dot menu at the top right.</li>' +
               '<li>Tap Add to Home screen.</li>' +
               '<li>Tap Install or Add.</li>' +
             '</ol>' +
           '</div>' +
-          '<button id="btn-continue" type="button" style="width:100%;min-height:56px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-md);font-weight:600;cursor:pointer">Continue to check-in</button>' +
+          '<button id="btn-continue" type="button" class="btn-primary">Continue to check-in</button>' +
         '</div>'
       );
       document.getElementById('btn-continue').addEventListener('click', function () {
@@ -166,27 +245,33 @@
     function paintMain() {
       var chevronPath = ctx.noteOpen ? 'M3 10l5-5 5 5' : 'M3 6l5 5 5-5';
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-5);flex:1">' +
+        '<div class="screen">' +
           '<div>' +
-            '<h1 style="font-family:Georgia,serif;font-size:var(--t-2xl);font-weight:400;margin:0">Good morning, ' + escapeHtml(ctx.firstName) + '</h1>' +
+            '<div class="eyebrow">Check in</div>' +
+            '<h1 style="font-size:var(--t-2xl)">Good morning, ' + escapeHtml(ctx.firstName) + '</h1>' +
             '<div style="margin-top:6px;font-size:var(--t-md);color:var(--ink-2)">' + escapeHtml(ctx.todayLong) + '</div>' +
-            (ctx.nowLabel ? '<div style="margin-top:2px;font-size:var(--t-md);color:var(--ink-2);font-variant-numeric:tabular-nums">Now ' + escapeHtml(ctx.nowLabel) + '</div>' : '') +
           '</div>' +
-          '<button id="btn-checkin" type="button" style="width:100%;min-height:72px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-xl);font-weight:600;cursor:pointer;letter-spacing:0.01em">I am in</button>' +
-          '<button id="btn-field" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--teal);color:var(--teal-dark);font-size:var(--t-md);font-weight:600;cursor:pointer">In the field</button>' +
+          (ctx.nowLabel
+            ? '<div class="now-card"><div><div class="eyebrow">Now</div><div class="now-value">' + escapeHtml(ctx.nowLabel) + '</div></div>' +
+              '<span class="badge chip-muted">Not checked in</span></div>'
+            : '') +
+          '<button id="btn-checkin" type="button" class="btn-primary">I am in</button>' +
+          '<button id="btn-wfh" type="button" class="btn-secondary">WFH</button>' +
+          '<button id="btn-field" type="button" class="btn-secondary">In the field</button>' +
           '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
-            '<button id="btn-note-toggle" type="button" aria-expanded="' + ctx.noteOpen + '" style="background:none;border:none;padding:0;min-height:44px;display:flex;align-items:center;gap:var(--s-2);color:var(--teal);cursor:pointer;font-size:var(--t-md)">' +
+            '<button id="btn-note-toggle" type="button" class="note-toggle" aria-expanded="' + ctx.noteOpen + '">' +
               '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="' + chevronPath + '"></path></svg>' +
-              'Add a note (optional)' +
+              'Add a note for your manager (optional)' +
             '</button>' +
             (ctx.noteOpen
-              ? '<textarea id="noteInput" aria-label="Note for your manager" placeholder="e.g. running about 10 minutes late" rows="3" style="width:100%;margin-top:var(--s-2);border:1px solid var(--line-strong);padding:10px;resize:vertical">' + escapeHtml(ctx.note) + '</textarea>'
+              ? '<textarea id="noteInput" class="note-input" aria-label="Note for your manager" placeholder="e.g. running about 10 minutes late" rows="3">' + escapeHtml(ctx.note) + '</textarea>'
               : '') +
           '</div>' +
           '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.5">Your location is recorded once, only when you tap.</p>' +
         '</div>'
       );
       document.getElementById('btn-checkin').addEventListener('click', function () { startCheckIn('Present'); });
+      document.getElementById('btn-wfh').addEventListener('click', function () { startCheckIn('WFH'); });
       document.getElementById('btn-field').addEventListener('click', function () { startCheckIn('Field'); });
       document.getElementById('btn-note-toggle').addEventListener('click', function () {
         var el = document.getElementById('noteInput');
@@ -207,11 +292,11 @@
 
     function renderLocating() {
       render(
-        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;justify-content:center;text-align:center">' +
-          '<div style="width:56px;height:56px;border:2px solid var(--teal);display:flex;align-items:center;justify-content:center">' +
+        '<div class="screen" style="align-items:center;justify-content:center;text-align:center">' +
+          '<div class="icon-circle" style="width:56px;height:56px;border:2px solid var(--teal)">' +
             '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A5A5F" stroke-width="1.8" aria-hidden="true"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>' +
           '</div>' +
-          '<div role="status" style="font-family:Georgia,serif;font-size:var(--t-xl)">Checking location</div>' +
+          '<h1 role="status" style="font-size:var(--t-xl)">Checking location</h1>' +
           '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:260px">This takes a few seconds. Keep the page open.</p>' +
         '</div>'
       );
@@ -219,48 +304,43 @@
 
     function renderSaving() {
       render(
-        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;justify-content:center;text-align:center">' +
-          '<div role="status" style="font-family:Georgia,serif;font-size:var(--t-xl)">Recording your check-in</div>' +
-          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:250px">Do not close the page.</p>' +
+        '<div class="screen" style="align-items:center;justify-content:center;text-align:center">' +
+          '<div class="icon-circle" style="width:76px;height:76px;background:var(--row-bg)">' +
+            '<div class="icon-circle" style="width:26px;height:26px;border:2px solid var(--teal-dark)"><div style="width:8px;height:8px;border-radius:50%;background:var(--teal-dark)"></div></div>' +
+          '</div>' +
+          '<h1 role="status" style="font-size:var(--t-xl)">Recording your check-in</h1>' +
+          '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2);max-width:250px">Don&#39;t close the page.</p>' +
         '</div>'
       );
     }
 
     function locationLabel_() {
       if (ctx.locationResult === 'inside') return 'Within radius';
-      if (ctx.locationResult === 'skipped_field') return 'Not classified, field visit';
+      if (ctx.locationResult === 'skipped_field') return 'Not tracked for this status';
       return 'Outside expected radius';
-    }
-
-    function statusLabel_() {
-      return ctx.status === 'Field' ? 'Field' : 'Present';
     }
 
     function renderConfirmed() {
       var receipt = [
         { label: 'Status', value: statusLabel_() },
-        { label: 'Recorded', value: ctx.arrivalTimeDisplay },
+        { label: 'Recorded', value: ctx.arrivalTimeDisplay || '—' },
         { label: 'Source', value: 'Self check-in' },
         { label: 'Location', value: locationLabel_() }
       ];
       render(
-        '<div style="padding:var(--s-6) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1;align-items:center;text-align:center">' +
-          '<div style="width:76px;height:76px;background:var(--teal-tint);border:1px solid var(--teal);display:flex;align-items:center;justify-content:center">' +
-            '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#06413F" stroke-width="2.2" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg>' +
+        '<div class="screen" style="align-items:center;text-align:center">' +
+          '<div class="icon-circle" style="width:76px;height:76px;background:var(--teal-tint);border:1px solid var(--teal)">' +
+            '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#06413F" stroke-width="2.2" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"></path></svg>' +
           '</div>' +
-          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.3">You are checked in at ' + escapeHtml(ctx.arrivalTimeDisplay) + '</h1>' +
-          '<div style="display:flex;gap:var(--s-2);align-items:center">' +
-            '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
-          '</div>' +
-          '<div style="width:100%;border:1px solid var(--line);text-align:left">' +
+          '<h1 style="font-size:var(--t-xl);line-height:1.3">You&#39;re checked in' + (ctx.arrivalTimeDisplay ? ' at ' + escapeHtml(ctx.arrivalTimeDisplay) : '') + '</h1>' +
+          statusChipHtml_(statusLabel_()) +
+          '<div class="receipt">' +
             receipt.map(function (r) {
-              return '<div style="display:flex;justify-content:space-between;gap:var(--s-3);padding:10px 12px;border-bottom:1px solid var(--line);font-size:var(--t-sm)">' +
-                '<span style="color:var(--ink-3);flex-shrink:0">' + escapeHtml(r.label) + '</span>' +
-                '<span style="text-align:right;word-break:break-word">' + escapeHtml(r.value) + '</span>' +
-                '</div>';
+              return '<div class="receipt-row"><span class="rlabel">' + escapeHtml(r.label) + '</span><span class="rvalue">' + escapeHtml(r.value) + '</span></div>';
             }).join('') +
           '</div>' +
-          '<button id="btn-back" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;font-size:var(--t-md)">Back to check-in page</button>' +
+          '<p style="margin:0;font-size:var(--t-sm);color:var(--ink-2)">Saved automatically. Nothing else is needed from you today.</p>' +
+          '<button id="btn-back" type="button" class="btn-plain">Done</button>' +
         '</div>'
       );
       document.getElementById('btn-back').addEventListener('click', renderAlready);
@@ -268,25 +348,22 @@
 
     function renderDenied() {
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
-          '<div style="width:64px;height:64px;background:var(--flag-tint);border:1px solid var(--flag);display:flex;align-items:center;justify-content:center">' +
+        '<div class="screen">' +
+          '<div class="icon-circle" style="width:64px;height:64px;background:var(--flag-tint);border:1px solid var(--flag)">' +
             '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8F3B18" stroke-width="1.9" aria-hidden="true"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"></path><path d="M9 7l6 6M15 7l-6 6"></path></svg>' +
           '</div>' +
-          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0;line-height:1.3">Checked in at ' + escapeHtml(ctx.arrivalTimeDisplay) + ' without location</h1>' +
-          '<div style="display:flex;gap:var(--s-2);flex-wrap:wrap">' +
-            '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
-            '<span style="' + chipStyle('#FFFFFF', '#485252', '#AEB6B5') + '">No location</span>' +
-          '</div>' +
+          '<h1 style="font-size:var(--t-xl);line-height:1.3">Checked in at ' + escapeHtml(ctx.arrivalTimeDisplay) + ' without location</h1>' +
+          '<div class="chip-row">' + statusChipHtml_(statusLabel_()) + '<span class="badge chip-muted">No location</span></div>' +
           '<p style="margin:0;font-size:var(--t-md);color:var(--ink-2)">Your entry was recorded and sent to the office manager for review. Nothing else is needed from you right now.</p>' +
-          '<div style="border:1px solid var(--line);padding:var(--s-4)">' +
-            '<div style="font-family:Georgia,serif;font-size:var(--t-lg);margin-bottom:var(--s-2)">To allow location next time</div>' +
-            '<ol style="margin:0;padding-left:20px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.7">' +
+          '<div class="row-bg-card">' +
+            '<div style="font-family:\'Source Serif 4\',Georgia,serif;font-weight:700;font-size:var(--t-lg);margin-bottom:var(--s-2)">To allow location next time</div>' +
+            '<ol style="margin:0;padding-left:20px;font-size:var(--t-sm);color:var(--ink-2);line-height:1.8">' +
               '<li>iPhone: Settings, then Safari, then Location, then Ask.</li>' +
               '<li>Android: Chrome, tap the lock icon in the address bar, then Permissions, then Location.</li>' +
               '<li>Reopen this page and tap the button again.</li>' +
             '</ol>' +
           '</div>' +
-          '<button id="btn-back" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;font-size:var(--t-md)">Back to check-in page</button>' +
+          '<button id="btn-back" type="button" class="btn-plain">Done</button>' +
         '</div>'
       );
       document.getElementById('btn-back').addEventListener('click', renderAlready);
@@ -294,31 +371,32 @@
 
     function renderAlready() {
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
-          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">You are already checked in today</h1>' +
-          '<div style="border:1px solid var(--teal);background:var(--teal-tint);padding:var(--s-4)">' +
-            '<div style="font-size:var(--t-sm);color:var(--ink-2);text-transform:uppercase;letter-spacing:0.06em">Recorded arrival</div>' +
+        '<div class="screen">' +
+          '<div class="eyebrow">Today</div>' +
+          '<h1 style="font-size:var(--t-xl)">You&#39;re checked in for today</h1>' +
+          '<div class="tint-card">' +
+            '<div class="eyebrow">Recorded arrival</div>' +
             (ctx.arrivalTimeDisplay
-              ? '<div style="font-family:Georgia,serif;font-size:var(--t-2xl);margin-top:2px;font-variant-numeric:tabular-nums">' + escapeHtml(ctx.arrivalTimeDisplay) + '</div>'
-              : '') +
-            '<div style="margin-top:var(--s-2);display:flex;gap:var(--s-2)">' +
-              '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">' + escapeHtml(statusLabel_()) + '</span>' +
-            '</div>' +
+              ? '<div class="now-value">' + escapeHtml(ctx.arrivalTimeDisplay) + '</div>'
+              : '<div style="margin-top:4px;font-size:var(--t-md);color:var(--ink-2)">No arrival time for this status.</div>') +
+            '<div style="margin-top:var(--s-2)">' + statusChipHtml_(statusLabel_()) + '</div>' +
           '</div>' +
+          '<button id="btn-req-timeoff" type="button" class="btn-plain">Request time off</button>' +
           '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2)">Already done for today. If this looks wrong, contact your manager.</p>' +
         '</div>'
       );
+      document.getElementById('btn-req-timeoff').addEventListener('click', openTimeOff);
     }
 
     function renderFailed() {
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
-          '<div role="alert" style="border:1px solid var(--flag);background:var(--flag-tint);padding:var(--s-4);color:var(--flag)">' +
-            '<div style="font-family:Georgia,serif;font-size:var(--t-lg)">Check-in did not save</div>' +
-            '<p style="margin:var(--s-2) 0 0;font-size:var(--t-sm);line-height:1.6">' + escapeHtml(ctx.errorMessage || 'Nothing was recorded.') + ' Tap Retry, or contact your manager if this keeps happening.</p>' +
+        '<div class="screen">' +
+          '<div role="alert" class="flag-card" style="color:var(--flag)">' +
+            '<div style="font-family:\'Source Serif 4\',Georgia,serif;font-weight:700;font-size:var(--t-lg)">Check-in did not save</div>' +
+            '<p style="margin:var(--s-2) 0 0;font-size:var(--t-sm);line-height:1.6;color:var(--ink)">' + escapeHtml(ctx.errorMessage || 'Nothing was recorded.') + ' Tap Retry, or contact your manager if this keeps happening.</p>' +
           '</div>' +
-          '<button id="btn-retry" type="button" style="width:100%;min-height:56px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-md);font-weight:600;cursor:pointer">Retry</button>' +
-          '<button id="btn-back" type="button" style="width:100%;min-height:52px;background:var(--surface);border:1px solid var(--line-strong);cursor:pointer;font-size:var(--t-md)">Back to check-in page</button>' +
+          '<button id="btn-retry" type="button" class="btn-primary">Retry</button>' +
+          '<button id="btn-back" type="button" class="btn-plain">Back to check-in page</button>' +
         '</div>'
       );
       document.getElementById('btn-retry').addEventListener('click', retryCheckIn);
@@ -328,9 +406,10 @@
     // ---- time off request -------------------------------------------------
 
     function timeOffStatusChip_(status) {
-      if (status === 'Approved') return '<span style="' + chipStyle('#EDF3F3', '#06413F', '#9CBCBC') + '">Approved</span>';
-      if (status === 'Denied') return '<span style="' + chipStyle('#FAEEE9', '#8F3B18', '#8F3B18') + '">Denied</span>';
-      return '<span style="' + chipStyle('#FFFFFF', '#485252', '#AEB6B5') + '">Pending</span>';
+      if (status === 'Approved') return '<span class="badge chip-present">Approved</span>';
+      if (status === 'Denied') return '<span class="badge chip-flag">Denied</span>';
+      if (status === 'Withdrawn') return '<span class="badge chip-muted">Withdrawn</span>';
+      return '<span class="badge chip-muted">Pending</span>';
     }
 
     function timeOffDateRangeLabel_(r) {
@@ -341,13 +420,19 @@
       if (!list) return '<p style="margin:0;font-size:var(--t-sm);color:var(--ink-3)">Loading...</p>';
       if (list.length === 0) return '<p style="margin:0;font-size:var(--t-sm);color:var(--ink-3)">No requests yet.</p>';
       return list.map(function (r) {
-        return '<div style="border:1px solid var(--line);padding:var(--s-3);margin-bottom:var(--s-2)">' +
-          '<div style="display:flex;justify-content:space-between;align-items:center;gap:var(--s-2)">' +
+        return '<div class="req-card">' +
+          '<div class="req-card-head">' +
             '<strong style="font-size:var(--t-sm)">' + escapeHtml(timeOffDateRangeLabel_(r)) + '</strong>' +
             timeOffStatusChip_(r.status) +
           '</div>' +
           '<div style="margin-top:4px;font-size:var(--t-sm);color:var(--ink-2)">' + escapeHtml(r.reason) + '</div>' +
           (r.status !== 'Pending' && r.decision_note ? '<div style="margin-top:4px;font-size:var(--t-xs);color:var(--ink-3)">Manager note: ' + escapeHtml(r.decision_note) + '</div>' : '') +
+          (r.status === 'Pending'
+            ? '<div class="req-actions">' +
+                '<button type="button" class="btn-secondary" data-edit="' + escapeHtml(r.request_id) + '">Edit request</button>' +
+                '<button type="button" class="btn-plain" style="color:var(--flag);border-color:var(--flag-border)" data-withdraw="' + escapeHtml(r.request_id) + '">Withdraw</button>' +
+              '</div>'
+            : '') +
         '</div>';
       }).join('');
     }
@@ -360,71 +445,162 @@
       boot();
     }
 
+    function captureTimeOffFormValues_() {
+      var s = document.getElementById('to-start'), e = document.getElementById('to-end'), r = document.getElementById('to-reason');
+      if (s) ctx.timeOffFormValues.start_date = s.value;
+      if (e) ctx.timeOffFormValues.end_date = e.value;
+      if (r) ctx.timeOffFormValues.reason = r.value;
+    }
+
+    function timeOffTypeChipsHtml_() {
+      return TIMEOFF_TYPES.map(function (t) {
+        return '<button type="button" class="pill-chip' + (ctx.timeOffType === t ? ' selected' : '') + '" data-type="' + t + '">' + t + '</button>';
+      }).join('');
+    }
+
+    function startEditTimeOff_(request) {
+      ctx.editingRequestId = request.request_id;
+      ctx.timeOffFormValues = { start_date: request.start_date, end_date: request.end_date, reason: request.reason };
+      ctx.timeOffType = request.type || 'Off';
+      ctx.timeOffError = null;
+      renderTimeOff();
+    }
+
+    function cancelEditTimeOff_() {
+      ctx.editingRequestId = null;
+      ctx.timeOffFormValues = {};
+      ctx.timeOffType = 'Off';
+      ctx.timeOffError = null;
+      renderTimeOff();
+    }
+
     function renderTimeOff() {
+      var fv = ctx.timeOffFormValues || {};
+      var editingRequest = ctx.editingRequestId && ctx.timeOffRequests
+        ? ctx.timeOffRequests.filter(function (r) { return r.request_id === ctx.editingRequestId; })[0]
+        : null;
+
       render(
-        '<div style="padding:var(--s-5) var(--s-4);display:flex;flex-direction:column;gap:var(--s-4);flex:1">' +
-          '<button id="btn-timeoff-back" type="button" style="align-self:flex-start;background:none;border:none;padding:0;color:var(--teal);cursor:pointer;font-size:var(--t-md);display:flex;align-items:center;gap:4px">' +
+        '<div class="screen">' +
+          '<button id="btn-timeoff-back" type="button" class="back-link">' +
             '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 3 5 8l5 5"></path></svg> Back' +
           '</button>' +
-          '<h1 style="font-family:Georgia,serif;font-size:var(--t-xl);font-weight:400;margin:0">Request time off</h1>' +
-          '<div style="display:flex;flex-direction:column;gap:var(--s-3)">' +
-            '<label style="font-size:var(--t-sm);color:var(--ink-2)">Start date' +
-              '<input id="to-start" type="date" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line-strong);padding:10px;font-size:var(--t-md)">' +
-            '</label>' +
-            '<label style="font-size:var(--t-sm);color:var(--ink-2)">End date (leave blank for a single day)' +
-              '<input id="to-end" type="date" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line-strong);padding:10px;font-size:var(--t-md)">' +
-            '</label>' +
-            '<label style="font-size:var(--t-sm);color:var(--ink-2)">Reason' +
-              '<textarea id="to-reason" rows="3" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line-strong);padding:10px;font-size:var(--t-md);resize:vertical"></textarea>' +
-            '</label>' +
+          '<div class="eyebrow">Time off</div>' +
+          '<h1 style="font-size:var(--t-xl)">Request time off</h1>' +
+          (editingRequest
+            ? '<div class="tint-card" style="display:flex;align-items:center;justify-content:space-between;gap:var(--s-3)">' +
+                '<span style="font-size:var(--t-sm);color:var(--ink-2)">Editing your pending request for ' + escapeHtml(timeOffDateRangeLabel_(editingRequest)) + '</span>' +
+                '<button type="button" id="btn-timeoff-cancel-edit" class="link-btn">Cancel</button>' +
+              '</div>'
+            : '') +
+          '<div>' +
+            '<label class="field-label" for="to-start">Start date</label>' +
+            '<input id="to-start" type="date" class="field-input" value="' + escapeHtml(fv.start_date || '') + '">' +
+          '</div>' +
+          '<div>' +
+            '<label class="field-label" for="to-end">End date</label>' +
+            '<div class="field-hint">Leave blank for a single day</div>' +
+            '<input id="to-end" type="date" class="field-input" value="' + escapeHtml(fv.end_date || '') + '">' +
+          '</div>' +
+          '<div>' +
+            '<label class="field-label">Type</label>' +
+            '<div class="chip-row" id="timeoff-type-chips">' + timeOffTypeChipsHtml_() + '</div>' +
+          '</div>' +
+          '<div>' +
+            '<label class="field-label" for="to-reason">Reason</label>' +
+            '<textarea id="to-reason" class="field-input" rows="3" placeholder="A few words for your manager">' + escapeHtml(fv.reason || '') + '</textarea>' +
           '</div>' +
           (ctx.timeOffError ? '<p role="alert" style="margin:0;color:var(--flag);font-size:var(--t-sm)">' + escapeHtml(ctx.timeOffError) + '</p>' : '') +
-          '<button id="btn-timeoff-submit" type="button" style="width:100%;min-height:52px;background:var(--teal);color:#fff;border:1px solid var(--teal);font-size:var(--t-md);font-weight:600;cursor:pointer">Submit request</button>' +
+          '<button id="btn-timeoff-submit" type="button" class="btn-primary">' + (editingRequest ? 'Save changes' : 'Submit request') + '</button>' +
           '<div style="border-top:1px solid var(--line);padding-top:var(--s-4)">' +
-            '<div style="font-family:Georgia,serif;font-size:var(--t-lg);margin-bottom:var(--s-2)">Your requests</div>' +
+            '<h2 style="font-size:var(--t-lg);margin-bottom:var(--s-2)">Your requests</h2>' +
             '<div id="timeoff-list">' + timeOffListHtml_(ctx.timeOffRequests) + '</div>' +
           '</div>' +
         '</div>'
       );
       document.getElementById('btn-timeoff-back').addEventListener('click', timeOffBack_);
       document.getElementById('btn-timeoff-submit').addEventListener('click', submitTimeOffFlow);
+      if (editingRequest) document.getElementById('btn-timeoff-cancel-edit').addEventListener('click', cancelEditTimeOff_);
+
+      document.querySelectorAll('#timeoff-type-chips [data-type]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          captureTimeOffFormValues_();
+          ctx.timeOffType = btn.dataset.type;
+          renderTimeOff();
+        });
+      });
+      document.querySelectorAll('#timeoff-list [data-edit]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var req = (ctx.timeOffRequests || []).filter(function (r) { return r.request_id === btn.dataset.edit; })[0];
+          if (req) startEditTimeOff_(req);
+        });
+      });
+      document.querySelectorAll('#timeoff-list [data-withdraw]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!confirm('Withdraw this request?')) return;
+          var requestId = btn.dataset.withdraw;
+          call('withdrawTimeOffRequest', TOKEN, requestId).then(function (list) {
+            if (ctx.editingRequestId === requestId) cancelEditTimeOff_();
+            ctx.timeOffRequests = list;
+            renderTimeOff();
+          }).catch(function (err) {
+            ctx.timeOffError = err && err.message ? err.message : 'Something went wrong.';
+            renderTimeOff();
+          });
+        });
+      });
     }
 
     function openTimeOff() {
       ctx.timeOffError = null;
       ctx.timeOffRequests = null;
+      ctx.editingRequestId = null;
+      ctx.timeOffFormValues = {};
+      ctx.timeOffType = 'Off';
       renderTimeOff();
-      callBackend('getMyTimeOffRequests', [TOKEN])
-        .then(function (list) { ctx.timeOffRequests = list; renderTimeOff(); })
-        .catch(function () { ctx.timeOffRequests = []; renderTimeOff(); });
+      call('getMyTimeOffRequests', TOKEN).then(function (list) {
+        ctx.timeOffRequests = list;
+        renderTimeOff();
+      }).catch(function () {
+        ctx.timeOffRequests = [];
+        renderTimeOff();
+      });
     }
 
     function submitTimeOffFlow() {
       var start = document.getElementById('to-start').value;
       var end = document.getElementById('to-end').value || start;
       var reason = document.getElementById('to-reason').value.trim();
+      var type = ctx.timeOffType;
       ctx.timeOffError = null;
       if (!start) { ctx.timeOffError = 'Start date is required.'; renderTimeOff(); return; }
       if (!reason) { ctx.timeOffError = 'A reason is required.'; renderTimeOff(); return; }
       if (end < start) { ctx.timeOffError = 'End date cannot be before start date.'; renderTimeOff(); return; }
 
       var btn = document.getElementById('btn-timeoff-submit');
+      var editingId = ctx.editingRequestId;
       btn.disabled = true;
-      btn.textContent = 'Submitting...';
-      callBackend('submitTimeOffRequest', [TOKEN, { start_date: start, end_date: end, reason: reason }])
-        .then(function (list) {
-          ctx.timeOffRequests = list;
-          renderTimeOff();
-        })
-        .catch(function (err) {
-          ctx.timeOffError = err && err.message ? err.message : 'Something went wrong.';
-          renderTimeOff();
-        });
+      btn.textContent = editingId ? 'Saving...' : 'Submitting...';
+
+      var promise = editingId
+        ? call('editTimeOffRequest', TOKEN, editingId, { start_date: start, end_date: end, reason: reason, type: type })
+        : call('submitTimeOffRequest', TOKEN, { start_date: start, end_date: end, reason: reason, type: type });
+
+      promise.then(function (list) {
+        ctx.timeOffRequests = list;
+        ctx.editingRequestId = null;
+        ctx.timeOffFormValues = {};
+        ctx.timeOffType = 'Off';
+        renderTimeOff();
+      }).catch(function (err) {
+        ctx.timeOffError = err && err.message ? err.message : 'Something went wrong.';
+        renderTimeOff();
+      });
     }
 
     // ---- geolocation + submit flow --------------------------------------
 
-    /** Same geolocation capture shape/behavior as checkin/GeoTest.html. */
+    /** Same geolocation capture shape/behavior as GeoTest.html. */
     function captureGeo() {
       return new Promise(function (resolve) {
         if (!('geolocation' in navigator)) {
@@ -464,13 +640,25 @@
       ctx.pendingStatus = status;
       var noteEl = document.getElementById('noteInput');
       if (noteEl) ctx.note = noteEl.value;
+
+      // WFH has no physical location to check, so skip the geolocation
+      // prompt entirely rather than asking for a permission that would
+      // never be used (locationResultForCheckIn always skips WFH too -
+      // see shared/rules.js).
+      if (status === 'WFH') {
+        ctx.pendingGeo = { permissionState: 'unavailable' };
+        renderSaving();
+        call('selfCheckIn', TOKEN, status, ctx.pendingGeo, navigator.userAgent, ctx.note)
+          .then(handleCheckInSuccess).catch(handleCheckInFailure);
+        return;
+      }
+
       renderLocating();
       captureGeo().then(function (geo) {
         ctx.pendingGeo = geo;
         renderSaving();
-        callBackend('selfCheckIn', [TOKEN, status, geo, navigator.userAgent, ctx.note])
-          .then(handleCheckInSuccess)
-          .catch(handleCheckInFailure);
+        call('selfCheckIn', TOKEN, status, geo, navigator.userAgent, ctx.note)
+          .then(handleCheckInSuccess).catch(handleCheckInFailure);
       });
     }
 
@@ -531,7 +719,7 @@
         return;
       }
       renderLoading();
-      callBackend('getCheckInPageData', [TOKEN])
+      call('getCheckInPageData', TOKEN)
         .then(handleBootData)
         .catch(function () { showInvalidView('This check-in link isn\'t valid. Contact your manager for a new one.'); });
     }
