@@ -51,6 +51,8 @@
     .btn-primary { width: 100%; min-height: 60px; background: var(--teal); color: #fff; border: none; border-radius: var(--r-pill); font-size: var(--t-lg); font-weight: 700; cursor: pointer; }
     .btn-primary:active { background: var(--teal-dark); }
     .btn-secondary { width: 100%; min-height: 52px; background: var(--surface); border: 1.5px solid var(--teal); color: var(--teal-dark); border-radius: var(--r-pill); font-size: var(--t-md); font-weight: 700; cursor: pointer; }
+    .btn-secondary.selected { background: var(--teal); color: #fff; border-color: var(--teal); }
+    .btn-primary:disabled { background: var(--line-strong); color: var(--ink-3); cursor: not-allowed; }
     .btn-plain { width: 100%; min-height: 48px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-pill); color: var(--ink); font-size: var(--t-md); font-weight: 600; cursor: pointer; }
     .btn-plain:hover { border-color: var(--teal); }
 
@@ -143,7 +145,8 @@
     var TIMEOFF_TYPES = ['Off', 'Vacation', 'Appointment', 'WFH', 'Family'];
     var ctx = {
       noteOpen: false, note: '', pendingStatus: null, pendingGeo: null,
-      editingRequestId: null, timeOffFormValues: {}, timeOffType: 'Off'
+      editingRequestId: null, timeOffFormValues: {}, timeOffType: 'Off',
+      selectedStatus: null
     };
 
     function render(html) {
@@ -242,8 +245,11 @@
       });
     }
 
+    function statusButtonClass_(status) {
+      return 'btn-secondary' + (ctx.selectedStatus === status ? ' selected' : '');
+    }
+
     function paintMain() {
-      var chevronPath = ctx.noteOpen ? 'M3 10l5-5 5 5' : 'M3 6l5 5 5-5';
       render(
         '<div class="screen">' +
           '<div>' +
@@ -255,38 +261,36 @@
             ? '<div class="now-card"><div><div class="eyebrow">Now</div><div class="now-value">' + escapeHtml(ctx.nowLabel) + '</div></div>' +
               '<span class="badge chip-muted">Not checked in</span></div>'
             : '') +
-          '<button id="btn-checkin" type="button" class="btn-primary">I am in</button>' +
-          '<button id="btn-wfh" type="button" class="btn-secondary">WFH</button>' +
-          '<button id="btn-field" type="button" class="btn-secondary">In the field</button>' +
-          '<div style="border-top:1px solid var(--line);padding-top:var(--s-3)">' +
-            '<button id="btn-note-toggle" type="button" class="note-toggle" aria-expanded="' + ctx.noteOpen + '">' +
-              '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="' + chevronPath + '"></path></svg>' +
-              'Add a note for your manager (optional)' +
-            '</button>' +
-            (ctx.noteOpen
-              ? '<textarea id="noteInput" class="note-input" aria-label="Note for your manager" placeholder="e.g. running about 10 minutes late" rows="3">' + escapeHtml(ctx.note) + '</textarea>'
-              : '') +
+          '<div class="field-label" style="margin-bottom:0">Choose one</div>' +
+          '<button id="btn-checkin" type="button" class="' + statusButtonClass_('Present') + '" aria-pressed="' + (ctx.selectedStatus === 'Present') + '">I am in</button>' +
+          '<button id="btn-wfh" type="button" class="' + statusButtonClass_('WFH') + '" aria-pressed="' + (ctx.selectedStatus === 'WFH') + '">WFH</button>' +
+          '<button id="btn-field" type="button" class="' + statusButtonClass_('Field') + '" aria-pressed="' + (ctx.selectedStatus === 'Field') + '">In the field</button>' +
+          '<div>' +
+            '<label class="field-label" for="noteInput">Note for your manager (optional)</label>' +
+            '<textarea id="noteInput" class="note-input" style="margin-top:0" placeholder="e.g. in the field, be in at 2" rows="3">' + escapeHtml(ctx.note) + '</textarea>' +
           '</div>' +
-          '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.5">Your location is recorded once, only when you tap.</p>' +
+          '<button id="btn-submit" type="button" class="btn-primary"' + (ctx.selectedStatus ? '' : ' disabled') + '>Submit check-in</button>' +
+          '<p style="margin:auto 0 0;font-size:var(--t-sm);color:var(--ink-2);line-height:1.5">Pick one option, add a note if you like, then tap Submit. Your location is recorded once, only when you submit.</p>' +
         '</div>'
       );
-      document.getElementById('btn-checkin').addEventListener('click', function () { startCheckIn('Present'); });
-      document.getElementById('btn-wfh').addEventListener('click', function () { startCheckIn('WFH'); });
-      document.getElementById('btn-field').addEventListener('click', function () { startCheckIn('Field'); });
-      document.getElementById('btn-note-toggle').addEventListener('click', function () {
-        var el = document.getElementById('noteInput');
-        if (el) ctx.note = el.value;
-        ctx.noteOpen = !ctx.noteOpen;
-        paintMain();
-        if (ctx.noteOpen) document.getElementById('noteInput').focus();
+      var noteEl = document.getElementById('noteInput');
+      noteEl.addEventListener('input', function (e) { ctx.note = e.target.value; });
+
+      // Tapping a status only selects it - nothing is sent until Submit.
+      [['btn-checkin', 'Present'], ['btn-wfh', 'WFH'], ['btn-field', 'Field']].forEach(function (pair) {
+        document.getElementById(pair[0]).addEventListener('click', function () {
+          ctx.note = noteEl.value;
+          ctx.selectedStatus = pair[1];
+          paintMain();
+        });
       });
-      if (ctx.noteOpen) {
-        document.getElementById('noteInput').addEventListener('input', function (e) { ctx.note = e.target.value; });
-      }
+      document.getElementById('btn-submit').addEventListener('click', function () {
+        if (ctx.selectedStatus) startCheckIn(ctx.selectedStatus);
+      });
     }
 
     function renderMain() {
-      ctx.noteOpen = false;
+      ctx.selectedStatus = null;
       paintMain();
     }
 
